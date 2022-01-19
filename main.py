@@ -10,6 +10,8 @@ import seaborn as sns # data visualisation
 # import csv file
 df = pd.read_csv(r"/Users/david/Downloads/UCDPA Project Folder/UCDPA_project_netflix_titles.csv")
 
+# DATA OVERVIEW
+
 print(df.info())
 
 # 8807 total entries, 12 columns
@@ -51,3 +53,40 @@ print(df.columns)
 #duration: Time duration of the show
 #listed_in: Genre of the show
 #description: Some text describing the show
+
+print(df.describe())
+
+# oldest is 1925
+# youngest is 2021
+# mean is 2014
+
+#CLEAN AND VALIDATE
+
+netflix_df = df.copy()
+
+# make a copy of dataset
+
+netflix_df.info()
+
+# 'director', 'cast', 'country' have substantial nan values.
+
+print(netflix_df.duplicated())
+
+print(netflix_df.duplicated().sum())
+
+# there are no duplicates
+
+print(netflix_df.isnull())
+
+# can see there are True values
+
+print(netflix_df.isnull().sum())
+
+# too many nan values for 'director', 'cast', 'country' to drop these rows
+# replace these values with 'no data'
+
+# nan values in date_added is to be substituted in with the most recent date from date_added.
+# This is because Netflix has the tendency to add more content over time, so this would minimally skew analysis
+# results.
+
+# 'dated_added', 'rating', 'duration' nan rows can be dropped.
