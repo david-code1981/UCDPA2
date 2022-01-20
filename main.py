@@ -90,3 +90,8 @@ print(netflix_df.isnull().sum())
 # results.
 
 # 'dated_added', 'rating', 'duration' nan rows can be dropped.
+
+# % of rows missing in each column
+for column in netflix_df.columns:
+    percentage = netflix_df[column].isnull().mean()
+    print(f'{column}: {round(percentage*100, 2)}%')
