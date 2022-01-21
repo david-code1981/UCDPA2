@@ -95,3 +95,25 @@ print(netflix_df.isnull().sum())
 for column in netflix_df.columns:
     percentage = netflix_df[column].isnull().mean()
     print(f'{column}: {round(percentage*100, 2)}%')
+
+# insert code here for 'director', 'cast', 'country'
+# replace these nan values with ' no data'
+
+#code:
+
+netflix_df['country'] = netflix_df['country'].fillna(netflix_df['country'].mode()[0])
+netflix_df['cast'].replace(np.nan,'No data',inplace=True)
+netflix_df['director'].replace(np.nan,'No data',inplace=True)
+
+print(netflix_df.isnull().sum())
+
+# insert code here for 'dated_added', 'rating', 'duration'
+# drop the rows for these nan values
+
+#code:
+
+netflix_df.dropna(axis=0, how='any', inplace=True)
+
+print(netflix_df.isnull().sum())
+
+# check to see if there still nan values
