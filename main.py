@@ -117,3 +117,25 @@ netflix_df.dropna(axis=0, how='any', inplace=True)
 print(netflix_df.isnull().sum())
 
 # check to see if there still nan values
+
+print(netflix_df.columns)
+
+# check the no column has been dropped
+
+print(netflix_df.dtypes)
+
+# check data type
+
+netflix_df['date_added'] = pd.to_datetime(df['date_added'])
+
+# change 'date_added' column type to DateTime
+
+print(netflix_df.dtypes)
+
+# check data type
+
+#EXPLORATORY DATA ANALYSIS
+#Analysis of Movies vs TV Shows:
+
+# Does Netflix have more Movies or TV Shows? (pie-chart)
+
