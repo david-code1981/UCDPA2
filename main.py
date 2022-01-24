@@ -139,19 +139,3 @@ print(netflix_df.dtypes)
 
 # Does Netflix have more Movies or TV Shows? (pie-chart)
 
-# Does Netflix have more Movies or TV Shows? (pie-chart)
-
-# GRAPH 1
-sns.set(style="darkgrid")
-plt.title("Movie v TV Show")
-ax = sns.countplot(x="type", data=netflix_df, palette=('Red','Blue'))
-plt.show()
-
-# Percentage of Netflix titles that are either Movies or TV Shows?
-# GRAPH 2
-
-plt.figure(figsize=(12,6))
-plt.title("Percentage of Netflix titles that are either Movies or TV Shows")
-g = plt.pie(netflix_df.type.value_counts(), explode=(0.025,0.025), labels=netflix_df.type.value_counts().index, colors=['red','blue'],autopct='%1.1f%%', startangle=180);
-plt.legend()
-plt.show()
