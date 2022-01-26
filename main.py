@@ -156,4 +156,22 @@ g = plt.pie(netflix_df.type.value_counts(), explode=(0.025, 0.025), labels=netfl
 plt.legend()
 plt.show()
 
+# Movie Ratings analysis:
 
+# What is the count of ratings across titles?
+
+plt.figure(figsize=(12,10))
+sns.set(style="darkgrid")
+ax = sns.countplot(x="rating", data=netflix_df, palette=("Set3"), order=netflix_df['rating'].value_counts().index[0:15])
+plt.show()
+
+# Movies vs TV Shows by ratings?
+
+netflix_df.rating.value_counts()
+order =  ['G', 'TV-Y', 'TV-G', 'PG', 'TV-Y7', 'TV-Y7-FV', 'TV-PG', 'PG-13', 'TV-14', 'R', 'NC-17', 'TV-MA']
+plt.figure(figsize=(15,7))
+g = sns.countplot(netflix_df.rating, hue=netflix_df.type, order=order, palette=('Red','Black'));
+plt.title("Ratings for Movies & TV Shows")
+plt.xlabel("Rating")
+plt.ylabel("Total Count")
+plt.show()
