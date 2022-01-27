@@ -175,3 +175,21 @@ plt.title("Ratings for Movies & TV Shows")
 plt.xlabel("Rating")
 plt.ylabel("Total Count")
 plt.show()
+
+# Popular genres analysis:
+
+# What are the different genres?
+
+count_by_genre = netflix_df['listed_in'].value_counts()
+count_by_genre
+
+# What are the most popular genres?
+
+filtered_genres = netflix_df.set_index('title').listed_in.str.split(', ', expand=True).stack().reset_index(level=1, drop=True);
+
+plt.figure(figsize=(7,9))
+g = sns.countplot(y = filtered_genres, order=filtered_genres.value_counts().index[:20],palette=('Red','Black'))
+plt.title('Top 20 Genres on Netflix')
+plt.xlabel('Number of Titles')
+plt.ylabel('Genres')
+plt.show()
