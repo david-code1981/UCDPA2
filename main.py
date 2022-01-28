@@ -1,11 +1,15 @@
 # This Python 3 environment comes with many helpful analytics libraries installed
 # It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-
+# For example, here's several helpful packages to load
+import matplotlib_inline
 import pandas as pd # read CSV file, data processing
-import numpy as np # linear algebra??
+import numpy as np # recommender system
 import regex as re # regex
 import matplotlib.pyplot as plt # data visualisation
 import seaborn as sns # data visualisation
+
+import warnings
+warnings.filterwarnings("ignore") # no warnings will be printed from now on.
 
 # import csv file
 df = pd.read_csv(r"/Users/david/Downloads/UCDPA Project Folder/UCDPA_project_netflix_titles.csv")
@@ -13,34 +17,28 @@ df = pd.read_csv(r"/Users/david/Downloads/UCDPA Project Folder/UCDPA_project_net
 # DATA OVERVIEW
 
 print(df.info())
-
 # 8807 total entries, 12 columns
-# 'release_year' is an integer
+# 'release_year' is an integer.
 # 'date_added' is an object, change to DateTime
-# can already see 'director', 'cast', 'country' have substantial nan values.
+# can already see 'director', 'cast', 'country' have substantial missing values.
 
 print(df.shape)
-
-# 8807 entries and 12 columns
+# There are 8807 entries and 12 columns
 
 print(df.head())
-
-# shows the first 5 rows
+# shows the first 5 rows of the dataset
 
 print(df.tail())
-
-# shoes the last 5 rows
-
-# 'type' is either Movie or TV Show
-#'duration' has both minutes and seasons
+# shows the last 5 rows of the dataset
+# Colomn'type' is either Movie or TV Show
+# Coloumn 'duration' has both minutes and seasons
 
 print(df.columns)
+# This lists the column names
 
-# lists column names
 
-#type is object
+# below is a description of column names:
 
-#description of column names:
 #show_id: unique id of each show (not much of a use for us in this notebook)
 #type: The category of a show, can be either a Movie or a TV Show
 #title: Name of the show
@@ -55,141 +53,171 @@ print(df.columns)
 #description: Some text describing the show
 
 print(df.describe())
-
 # oldest is 1925
 # youngest is 2021
 # mean is 2014
 
-#CLEAN AND VALIDATE
+# CLEAN & VALIDATE
 
 netflix_df = df.copy()
-
 # make a copy of dataset
 
-netflix_df.info()
-
-# 'director', 'cast', 'country' have substantial nan values.
+print(netflix_df.info())
+# check info of df copy
+# 'director', 'cast', 'country' have substantial missing values.
 
 print(netflix_df.duplicated())
+# This boolean check is not mush use to use as it's only showing top and bottom 5 in this dataset.
 
 print(netflix_df.duplicated().sum())
-
-# there are no duplicates
+# there are no duplicates in this dataset.
 
 print(netflix_df.isnull())
-
-# can see there are True values
+# can see there are True values reflecting missing values.
 
 print(netflix_df.isnull().sum())
-
-# too many nan values for 'director', 'cast', 'country' to drop these rows
-# replace these values with 'no data'
-
-# nan values in date_added is to be substituted in with the most recent date from date_added.
-# This is because Netflix has the tendency to add more content over time, so this would minimally skew analysis
-# results.
-
-# 'dated_added', 'rating', 'duration' nan rows can be dropped.
+# too many missing values for 'director', 'cast', 'country' to drop these rows
+# replace these values with 'no data' & 'United States' for the 'country'
+# 'dated_added', 'rating', 'duration' missing rows can be dropped.
 
 # % of rows missing in each column
 for column in netflix_df.columns:
     percentage = netflix_df[column].isnull().mean()
-    print(f'{column}: {round(percentage*100, 2)}%')
+    print(f'{column}: {round(percentage * 100, 2)}%')
+
+# this further shows that percentages for 'dated_added', 'rating', 'duration' so so low we can
+# drop these rows without the impacting the integrity of the dataset.
 
 # insert code here for 'director', 'cast', 'country'
-# replace these nan values with ' no data'
-
-#code:
-
+# replace these missing values with 'no data' & & 'United States' for the 'country'
 netflix_df['country'] = netflix_df['country'].fillna(netflix_df['country'].mode()[0])
 netflix_df['cast'].replace(np.nan,'No data',inplace=True)
 netflix_df['director'].replace(np.nan,'No data',inplace=True)
 
+print(netflix_df.head())
+# check to make sure missing values have been replaced.
+
+print(netflix_df.tail())
+# # check to make sure missing values have been replaced.
+
 print(netflix_df.isnull().sum())
+# shows we just left with the missing values for 'dated_added', 'rating', 'duration'
 
 # insert code here for 'dated_added', 'rating', 'duration'
 # drop the rows for these nan values
-
-#code:
-
 netflix_df.dropna(axis=0, how='any', inplace=True)
 
 print(netflix_df.isnull().sum())
-
-# check to see if there still nan values
+# check to see if there still missing values
 
 print(netflix_df.columns)
-
 # check the no column has been dropped
 
-print(netflix_df.dtypes)
+print(netflix_df.info())
+# check the information in our resulting dataset.
 
+print(netflix_df.dtypes)
 # check data type
 
 netflix_df['date_added'] = pd.to_datetime(df['date_added'])
-
 # change 'date_added' column type to DateTime
 
 print(netflix_df.dtypes)
-
 # check data type
 
-#EXPLORATORY DATA ANALYSIS
-#Analysis of Movies vs TV Shows:
+# EXPLORATORY DATA ANALYSIS
 
-# Does Netflix have more Movies or TV Shows? (pie-chart)
+# 1) ANALYSIS OF MOVIES VS TV SHOWS
 
-# Does Netflix have more Movies or TV Shows? (pie-chart)
+# Does Netflix have more Movies or TV Shows?
 
-# GRAPH 1
+# Graph no. 1
 sns.set(style="darkgrid")
 plt.title("Movie v TV Show")
 ax = sns.countplot(x="type", data=netflix_df, palette=('Red','Blue'))
+# can see Movies outnumber TV Shows by a large amount
 
-# Percentage of Netflix titles that are either Movies or TV Shows?
-# GRAPH 2
+# Percentage of titles that are either Movies or TV Show?
+# Graph no. 2
 
-plt.figure(figsize=(12, 6))
-plt.title("Percentage of Netflix Titles that are either Movies or TV Shows")
-g = plt.pie(netflix_df.type.value_counts(), explode=(0.025, 0.025), labels=netflix_df.type.value_counts().index,
-            colors=['red', 'blue'], autopct='%1.1f%%', startangle=180);
+plt.figure(figsize=(12,6))
+plt.title("Percentage of Titles that are either Movies or TV Shows")
+g = plt.pie(netflix_df.type.value_counts(), explode=(0.025,0.025), labels=netflix_df.type.value_counts().index, colors=['red','blue'],autopct='%1.1f%%', startangle=180);
 plt.legend()
 plt.show()
+# To further illustrate the above we can see Movies represent over two thirds of the titles with 69.7%
+# With such a large amount of Movie titles it may be ideal to carry out the majority of the EDA based on Movies.
 
-# Movie Ratings analysis:
+# 2) MOVIE RATINGS ANALYSIS
 
-# What is the count of ratings across titles?
-
+# Count of ratings across titles?
+# Graph no. 3
 plt.figure(figsize=(12,10))
 sns.set(style="darkgrid")
 ax = sns.countplot(x="rating", data=netflix_df, palette=("Set3"), order=netflix_df['rating'].value_counts().index[0:15])
+plt.title('Count of Titles across ratings')
 plt.show()
+# The largest count of movie titles is under the 'TV-MA' which is a title designed for mature audiences.
+# After this the second largest is the 'TV-14' which stands for content inappropriate for children younger than
+# 14 years of age.
 
 # Movies vs TV Shows by ratings?
-
+# Graph no. 4
 netflix_df.rating.value_counts()
 order =  ['G', 'TV-Y', 'TV-G', 'PG', 'TV-Y7', 'TV-Y7-FV', 'TV-PG', 'PG-13', 'TV-14', 'R', 'NC-17', 'TV-MA']
-plt.figure(figsize=(15,7))
-g = sns.countplot(netflix_df.rating, hue=netflix_df.type, order=order, palette=('Red','Black'));
+plt.figure(figsize=(17,7))
+g = sns.countplot(netflix_df.rating, hue=netflix_df.type, order=order, palette=('Red','Blue'));
 plt.title("Ratings for Movies & TV Shows")
 plt.xlabel("Rating")
 plt.ylabel("Total Count")
 plt.show()
 
-# Popular genres analysis:
+# POPULAR GENRE ANALYSIS
 
 # What are the different genres?
-
 count_by_genre = netflix_df['listed_in'].value_counts()
-count_by_genre
+print(count_by_genre)
 
 # What are the most popular genres?
+# Graph no. 5
+popular_genres = netflix_df.set_index('title').listed_in.str.split(', ', expand=True).stack().reset_index(level=1, drop=True);
 
-filtered_genres = netflix_df.set_index('title').listed_in.str.split(', ', expand=True).stack().reset_index(level=1, drop=True);
-
-plt.figure(figsize=(7,9))
-g = sns.countplot(y = filtered_genres, order=filtered_genres.value_counts().index[:20],palette=('Red','Black'))
+plt.figure(figsize=(8,10))
+g = sns.countplot(y = popular_genres, order=popular_genres.value_counts().index[:20],palette=("Set3"))
 plt.title('Top 20 Genres on Netflix')
 plt.xlabel('Number of Titles')
-plt.ylabel('Genres')
+plt.ylabel('Genre')
 plt.show()
+
+# ANALYSING TITLES THROUGH THE YEARS:
+
+# Availability of content over the years?
+# Graph no. 6
+netflix_df.plot(kind='scatter', x='date_added', y='release_year', figsize=(17,8), s=4, c='green')
+plt.title('Streaming Availability Year vs Actual Release Year')
+plt.xlabel('Year Available on Netflix')
+plt.ylabel('Year Originally Released')
+plt.show()
+
+# ANALYSING MOVIE TITLES BY DURATION:
+
+print(netflix_df['duration'].isnull().sum())
+# check to see if there still missing duration values
+
+print(netflix_df['duration'].value_counts())
+# check of the count of different durations
+
+movie_df = netflix_df[(netflix_df['type'] == 'Movie')]
+print(movie_df.head())
+# create a separate Movie dataset as this forms the majority of content.
+# we can check the trend of movie durations over time.
+
+print(movie_df['duration'].value_counts())
+# can see there are some outliers in Movie duration.
+# there is also the string 'min' included in the durations.
+
+movie_df['duration']=movie_df['duration'].str.replace(' min','')
+movie_df['duration']=movie_df['duration'].astype(str).astype(int)
+print(movie_df['duration'])
+# we need to strip the 'min' and replace with an empty string.
+# we also set the data type to interger.
