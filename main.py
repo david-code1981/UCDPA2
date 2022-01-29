@@ -155,7 +155,7 @@ plt.show()
 plt.figure(figsize=(12,10))
 sns.set(style="darkgrid")
 ax = sns.countplot(x="rating", data=netflix_df, palette=("Set3"), order=netflix_df['rating'].value_counts().index[0:15])
-plt.title('Count of Titles across ratings')
+plt.title('Count of Titles Across Ratings')
 plt.show()
 # The largest count of movie titles is under the 'TV-MA' which is a title designed for mature audiences.
 # After this the second largest is the 'TV-14' which stands for content inappropriate for children younger than
@@ -221,3 +221,48 @@ movie_df['duration']=movie_df['duration'].astype(str).astype(int)
 print(movie_df['duration'])
 # we need to strip the 'min' and replace with an empty string.
 # we also set the data type to interger.
+
+# Duration of Movies by Count:
+#Graph no. 7
+sns.set(style="darkgrid")
+sns.kdeplot(data=movie_df['duration'], shade=True)
+plt.show()
+
+# now we can create KDE graph to illustrate the duration of Movies by number.
+# KDE graph is useful here as we have a large number of data points.
+
+# a large amount of movies are between 75-120 mins. This makes sense as a lot of people find a
+# 3 hour movie too long to sit through in one go.
+
+# Trend of Movie Duration by Year:
+# Graph no. 8
+duration_by_year = movie_df.groupby(['release_year']).mean()
+duration_by_year = duration_by_year.sort_index()
+
+plt.figure(figsize=(15,6))
+sns.lineplot(x=duration_by_year.index, y=duration_by_year.duration.values)
+plt.box(on=None)
+plt.ylabel('Movie duration in minutes')
+plt.xlabel('Year of release')
+plt.title("Movie Duration over the Years", fontsize=14, color='blue')
+plt.show()
+
+# can see the change in Movie duration over time.
+# 1960 - 1970 has the highest duration in minutes before it levels out in the later part of the century.
+
+# Number of content released by year:
+# Graph no. 9
+release_year = movie_df['release_year'].value_counts()
+release_year = release_year.sort_index(ascending=True)
+
+plt.figure(figsize=(9,8))
+plt.plot(release_year[-11:-1])
+plt.scatter(release_year[-11:-1].index, release_year[-11:-1].values, s=0.5*release_year[-11:-1].values, c='Red')
+plt.box(on=None)
+plt.xticks(rotation = 60)
+plt.xticks(release_year[-11:-1].index)
+plt.title('Number of Content Released by Year', color='blue', fontsize=14)
+plt.show()
+
+# there was a sharp increase in content released from 2014 tp 2018.
+# the number of content released by year peaked in 2017 & 2018.
