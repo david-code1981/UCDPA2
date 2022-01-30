@@ -321,3 +321,14 @@ tfidf_matrix = tfidf.fit_transform(netflix_df['description'])
 
 #shape of tfidf_matrix
 print(tfidf_matrix.shape)
+
+#Linear Kernel
+from sklearn.metrics.pairwise import linear_kernel
+
+#Cosine similarity
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+
+indices = pd.Series(netflix_df.index, index = netflix_df['title']).drop_duplicates()
+
+print(indices)
+
