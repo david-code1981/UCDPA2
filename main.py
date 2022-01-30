@@ -148,7 +148,7 @@ plt.show()
 # To further illustrate the above we can see Movies represent over two thirds of the titles with 69.7%
 # With such a large amount of Movie titles it may be ideal to carry out the majority of the EDA based on Movies.
 
-# 2) MOVIE RATINGS ANALYSIS
+# 2) RATINGS ANALYSIS
 
 # Count of ratings across titles?
 # Graph no. 3
@@ -274,7 +274,7 @@ print(IMDb_user_ratings.head())
 # the number of content released by year peaked in 2017 & 2018.
 
 print(IMDb_user_ratings.info())
-# as there is only 5 columns and we will be mergin this to the netflix dataset we will not drop any columns.
+# as there is only 5 columns and we will be margin this to the netflix dataset we will not drop any columns.
 
 print(IMDb_user_ratings.isnull().sum())
 
@@ -288,3 +288,36 @@ print(netflix_IMDb_df.shape)
 #Sorting in a descending order, so as the output should reflect highest rated movies on top
 netflix_IMDb_df.sort_values(by=['averageRating'],inplace=True , ascending = False)
 print(netflix_IMDb_df.head(20))
+
+# NETFLIX RECOMMENDATION SYSTEM
+
+#Netflix Recommendation System
+#Content Based Filtering
+#For this recommender system the content of the movie (cast, description, director,genre etc) is used to find
+#its similarity with other movies. Then the movies that are most likely to be similar are recommended.
+
+
+#Plot description based Recommender
+#We will calculate similarity scores for all movies based on their plot descriptions and recommend movies based
+#on that similarity score. The plot description is given in the description feature of our dataset.
+
+
+# We need to convert the word vector of each overview.
+# We'll compute Term Frequency-Inverse Document Frequency (TF-IDF) vectors for each description.
+# The overall importance of each word to the documents in which they appear is equal to TF * IDF.
+# This is done to reduce the importance of words that occur frequently in plot overviews and therefore,
+# their significance in computing the final similarity score.
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(stop_words='english')
+
+#Replace missing values with an empty string
+netflix_df['description'] = netflix_df['description'].fillna('')
+
+#Create the required TF-IDF matrix by fitting and transforming
+# the data
+tfidf_matrix = tfidf.fit_transform(netflix_df['description'])
+
+#shape of tfidf_matrix
+print(tfidf_matrix.shape)
