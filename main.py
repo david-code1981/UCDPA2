@@ -264,5 +264,27 @@ plt.xticks(release_year[-11:-1].index)
 plt.title('Number of Content Released by Year', color='blue', fontsize=14)
 plt.show()
 
+# INSECTING IMDB TITLE DATASET/MERGING WITH NETFLIX DATASET
+
+#Reading and Inspecting Movie titles data for IMDb
+IMDb_user_ratings = pd.read_csv(r'/Users/david/Downloads/UCDPA Project Folder/IMDB-Ratings.csv')
+print(IMDb_user_ratings.head())
+
 # there was a sharp increase in content released from 2014 tp 2018.
 # the number of content released by year peaked in 2017 & 2018.
+
+print(IMDb_user_ratings.info())
+# as there is only 5 columns and we will be mergin this to the netflix dataset we will not drop any columns.
+
+print(IMDb_user_ratings.isnull().sum())
+
+netflix_IMDb_df = pd.merge(netflix_df,IMDb_user_ratings, how='inner', on ='title')
+print(netflix_IMDb_df.head())
+
+print(netflix_IMDb_df.isnull().sum())
+
+print(netflix_IMDb_df.shape)
+
+#Sorting in a descending order, so as the output should reflect highest rated movies on top
+netflix_IMDb_df.sort_values(by=['averageRating'],inplace=True , ascending = False)
+print(netflix_IMDb_df.head(20))
