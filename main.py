@@ -384,4 +384,48 @@ for feature in features:
 
 print(filledna.head())
 
+# Creating a "soup" or a "bag of words" of all rows
+def create_soup(x):
+    return x['title']+ ' '+ x['director']+ ' '+ x['cast']+ ' ' + x['listed_in']+ ' ' +x['description']
+
+filledna['soup'] = filledna.apply(create_soup, axis=1)
+
+# From here on, the code is basically similar to the upper model except the fact that count vectorizer
+# is used instead of tfidf
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+count = CountVectorizer(stop_words='english')
+count_matrix = count.fit_transform(filledna['soup'])
+
+cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
+
+filledna = filledna.reset_index()
+indices = pd.Series(filledna.index, index=filledna['title'])
+
+
+def get_recommendation_new(title, cosine_sim=cosine_sim):
+    idx = indices[title]
+
+    # Get the pairwise similarity scores of all movies with that movie
+    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    # Sort the movies based on the similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Get the scores of the 10 most similar movies
+    sim_scores = sim_scores[1:11]
+
+    # Get the movie indices
+    movie_indices = [i[0] for i in sim_scores]
+
+    # return the top 10 similar movies
+    return netflix_df['title'].iloc[movie_indices]
+
+print(get_recommendation_new('narcos', cosine_sim2))
+
+
+print(get_recommendation_new('shooter', cosine_sim2))
+
 
