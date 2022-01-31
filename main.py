@@ -332,3 +332,56 @@ indices = pd.Series(netflix_df.index, index = netflix_df['title']).drop_duplicat
 
 print(indices)
 
+
+def request_recommendation_for(title, cosine_sim=cosine_sim):
+    idx = indices[title]
+
+    # Get the pairwise similarity scores of all titles with that title
+    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    # Sort the titles based on the similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Get the scores of the 10 most similar titles
+    sim_scores = sim_scores[1:11]
+
+    # Get the title indices
+    title_indices = [i[0] for i in sim_scores]
+
+    # return the top 10 similar titles
+    return netflix_df['title'].iloc[title_indices]
+
+print(request_recommendation_for('Narcos'))
+
+print(request_recommendation_for('Shooter'))
+
+# It is seen that the model performs well, but is not very accurate.
+# Therefore, more metrics are added to the model to improve performance.
+
+# Content based filtering on multiple metrics
+# Filtering on the following factors:
+
+# Title
+# Cast
+# Director
+# Listed in
+# Plot
+
+filledna=netflix_df.fillna('')
+print(filledna.head())
+# Filling missing values with empty string
+
+# Cleaning the data, making all the words lower case
+def clean_data(x):
+    return str.lower(x.replace(" ",""))
+
+#Features on which the model is to be filtered
+features=['title', 'director', 'cast', 'listed_in', 'description']
+filledna=filledna[features]
+
+for feature in features:
+    filledna[feature] = filledna[feature].apply(clean_data)
+
+print(filledna.head())
+
+
