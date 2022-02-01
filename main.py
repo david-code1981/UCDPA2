@@ -1,26 +1,26 @@
 # This Python 3 environment comes with many helpful analytics libraries installed
 # It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
 # For example, here's several helpful packages to load
-import matplotlib_inline
+
 import pandas as pd # read CSV file, data processing
 import numpy as np # recommender system
-import regex as re # regex
 import matplotlib.pyplot as plt # data visualisation
 import seaborn as sns # data visualisation
 
-import warnings
+
+import warnings # to ignore warnings
 warnings.filterwarnings("ignore") # no warnings will be printed from now on.
 
-# import csv file
 df = pd.read_csv(r"/Users/david/Downloads/UCDPA Project Folder/UCDPA_project_netflix_titles.csv")
+# import csv file
 
 # DATA OVERVIEW
 
 print(df.info())
 # 8807 total entries, 12 columns
-# 'release_year' is an integer.
-# 'date_added' is an object, change to DateTime
-# can already see 'director', 'cast', 'country' have substantial missing values.
+# data type for 'release_year' is an integer.
+# data type for 'date_added' is an object, change to DateTime
+# can already see 'director', 'cast', 'country' coloumns have substantial missing values.
 
 print(df.shape)
 # There are 8807 entries and 12 columns
@@ -30,8 +30,8 @@ print(df.head())
 
 print(df.tail())
 # shows the last 5 rows of the dataset
-# Colomn'type' is either Movie or TV Show
-# Coloumn 'duration' has both minutes and seasons
+# column'type' is either a Movie or TV Show
+# column 'duration' has both minutes and seasons
 
 print(df.columns)
 # This lists the column names
@@ -67,7 +67,7 @@ print(netflix_df.info())
 # 'director', 'cast', 'country' have substantial missing values.
 
 print(netflix_df.duplicated())
-# This boolean check is not mush use to use as it's only showing top and bottom 5 in this dataset.
+# This boolean check is not much use to use as it's only showing top and bottom 5 in this dataset.
 
 print(netflix_df.duplicated().sum())
 # there are no duplicates in this dataset.
@@ -76,36 +76,36 @@ print(netflix_df.isnull())
 # can see there are True values reflecting missing values.
 
 print(netflix_df.isnull().sum())
-# too many missing values for 'director', 'cast', 'country' to drop these rows
-# replace these values with 'no data' & 'United States' for the 'country'
-# 'dated_added', 'rating', 'duration' missing rows can be dropped.
+# too many missing values for 'director', 'cast', 'country' to drop these rows without affecting the dataset quality.
+# we will replace these values with 'no data'.
 
 # % of rows missing in each column
 for column in netflix_df.columns:
     percentage = netflix_df[column].isnull().mean()
     print(f'{column}: {round(percentage * 100, 2)}%')
 
-# this further shows that percentages for 'dated_added', 'rating', 'duration' so so low we can
+# this further shows that percentages for 'dated_added', 'rating', 'duration' are so low we can
 # drop these rows without the impacting the integrity of the dataset.
 
-# insert code here for 'director', 'cast', 'country'
-# replace these missing values with 'no data' & & 'United States' for the 'country'
 netflix_df['country'] = netflix_df['country'].fillna(netflix_df['country'].mode()[0])
 netflix_df['cast'].replace(np.nan,'No data',inplace=True)
 netflix_df['director'].replace(np.nan,'No data',inplace=True)
 
+# we will insert code here for 'director', 'cast', 'country' as mentioned above.
+# replace these missing values with 'no data'.
+
 print(netflix_df.head())
-# check to make sure missing values have been replaced.
+# check to make sure missing values have been replaced with 'no data'.
 
 print(netflix_df.tail())
-# # check to make sure missing values have been replaced.
+# check to make sure missing values have been replaced with 'no data'.
 
 print(netflix_df.isnull().sum())
-# shows we just left with the missing values for 'dated_added', 'rating', 'duration'
+# we are left with the missing values for 'dated_added', 'rating', 'duration' columns.
+# as these are a small number we drop these rows withing reducing the quality of the dataset.
 
-# insert code here for 'dated_added', 'rating', 'duration'
-# drop the rows for these nan values
 netflix_df.dropna(axis=0, how='any', inplace=True)
+# drop all rows with missing values and overwrite the dataset.
 
 print(netflix_df.isnull().sum())
 # check to see if there still missing values
@@ -117,13 +117,19 @@ print(netflix_df.info())
 # check the information in our resulting dataset.
 
 print(netflix_df.dtypes)
-# check data type
+# check data type of each column.
 
 netflix_df['date_added'] = pd.to_datetime(df['date_added'])
-# change 'date_added' column type to DateTime
+# change 'date_added' column type to DateTime using pandas datetime function.
 
 print(netflix_df.dtypes)
-# check data type
+# check data types again
+
+netflix_df = netflix_df.rename(columns={"listed_in":"genre"})
+netflix_df['genre'] = netflix_df['genre'].apply(lambda x: x.split(",")[0])
+netflix_df['genre'].head()
+
+# rename the 'listed_in' column as 'genre' for easy understanding.
 
 # EXPLORATORY DATA ANALYSIS
 
