@@ -141,7 +141,8 @@ netflix_df['genre'].head()
 sns.set(style="darkgrid")
 plt.title("Movie v TV Show")
 ax = sns.countplot(x="type", data=netflix_df, palette=('Red','Blue'))
-# can see Movies outnumber TV Shows by a large amount
+
+# can see Movies outnumber TV Shows by more than double the amount.
 
 # Percentage of titles that are either Movies or TV Show?
 # Graph no. 2
@@ -181,12 +182,12 @@ plt.show()
 # POPULAR GENRE ANALYSIS
 
 # What are the different genres?
-count_by_genre = netflix_df['listed_in'].value_counts()
+count_by_genre = netflix_df['genre'].value_counts()
 print(count_by_genre)
 
 # What are the most popular genres?
 # Graph no. 5
-popular_genres = netflix_df.set_index('title').listed_in.str.split(', ', expand=True).stack().reset_index(level=1, drop=True);
+popular_genres = netflix_df.set_index('title').genre.str.split(', ', expand=True).stack().reset_index(level=1, drop=True);
 
 plt.figure(figsize=(8,10))
 g = sns.countplot(y = popular_genres, order=popular_genres.value_counts().index[:20],palette=("Set3"))
@@ -229,13 +230,14 @@ print(movie_df['duration'])
 # we also set the data type to interger.
 
 # Duration of Movies by Count:
-#Graph no. 7
+# Graph no. 7
 sns.set(style="darkgrid")
 sns.kdeplot(data=movie_df['duration'], shade=True)
+plt.title('Distribution of Movie Durations')
 plt.show()
 
-# now we can create KDE graph to illustrate the duration of Movies by number.
-# KDE graph is useful here as we have a large number of data points.
+# now we can create a KDE graph to illustrate the distribution of Movie durations.
+# a KDE graph is useful here as we have a large number of data points.
 
 # a large amount of movies are between 75-120 mins. This makes sense as a lot of people find a
 # 3 hour movie too long to sit through in one go.
@@ -370,7 +372,7 @@ print(request_recommendation_for('Shooter'))
 # Title
 # Cast
 # Director
-# Listed in
+# Genre
 # Plot
 
 filledna=netflix_df.fillna('')
@@ -382,7 +384,7 @@ def clean_data(x):
     return str.lower(x.replace(" ",""))
 
 #Features on which the model is to be filtered
-features=['title', 'director', 'cast', 'listed_in', 'description']
+features=['title', 'director', 'cast', 'genre', 'description']
 filledna=filledna[features]
 
 for feature in features:
@@ -392,7 +394,7 @@ print(filledna.head())
 
 # Creating a "soup" or a "bag of words" of all rows
 def create_soup(x):
-    return x['title']+ ' '+ x['director']+ ' '+ x['cast']+ ' ' + x['listed_in']+ ' ' +x['description']
+    return x['title']+ ' '+ x['director']+ ' '+ x['cast']+ ' ' + x['genre']+ ' ' +x['description']
 
 filledna['soup'] = filledna.apply(create_soup, axis=1)
 
