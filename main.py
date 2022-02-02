@@ -299,16 +299,9 @@ print(netflix_IMDb_df.head(20))
 
 # NETFLIX RECOMMENDATION SYSTEM
 
-#Netflix Recommendation System
-#Content Based Filtering
-#For this recommender system the content of the movie (cast, description, director,genre etc) is used to find
-#its similarity with other movies. Then the movies that are most likely to be similar are recommended.
-
-
-#Plot description based Recommender
+#Plot description based Recommender:
 #We will calculate similarity scores for all movies based on their plot descriptions and recommend movies based
 #on that similarity score. The plot description is given in the description feature of our dataset.
-
 
 # We need to convert the word vector of each overview.
 # We'll compute Term Frequency-Inverse Document Frequency (TF-IDF) vectors for each description.
@@ -359,21 +352,20 @@ def request_recommendation_for(title, cosine_sim=cosine_sim):
     # return the top 10 similar titles
     return netflix_df['title'].iloc[title_indices]
 
+print(request_recommendation_for('Savages'))
+# I have chosen 'savages' from the top 20 list created above.
+# capital first letter is required for this model.
+
 print(request_recommendation_for('Narcos'))
+# I have chosen 'narcos' as a high profile international Netflix title.
+# capital first letter is required for this model.
 
-print(request_recommendation_for('Shooter'))
-
-# It is seen that the model performs well, but is not very accurate.
+# We can see the model performs well, but is not very accurate.
 # Therefore, more metrics are added to the model to improve performance.
+# This is called a content based recommender system
 
-# Content based filtering on multiple metrics
-# Filtering on the following factors:
-
-# Title
-# Cast
-# Director
-# Genre
-# Plot
+#For this recommender system the content of the movie (cast, description, director,genre etc) is used to find
+#its similarity with other movies. Then the movies that are most likely to be similar are recommended.
 
 filledna=netflix_df.fillna('')
 print(filledna.head())
@@ -382,19 +374,22 @@ print(filledna.head())
 # Cleaning the data, making all the words lower case
 def clean_data(x):
     return str.lower(x.replace(" ",""))
+# this function returns a string with all lower case replaces white spaces.
 
-#Features on which the model is to be filtered
 features=['title', 'director', 'cast', 'genre', 'description']
 filledna=filledna[features]
+#Features on which the model is to be filtered
 
 for feature in features:
     filledna[feature] = filledna[feature].apply(clean_data)
 
 print(filledna.head())
+# takes the features variable created above and applies the clean_data function to it.
 
 # Creating a "soup" or a "bag of words" of all rows
 def create_soup(x):
     return x['title']+ ' '+ x['director']+ ' '+ x['cast']+ ' ' + x['genre']+ ' ' +x['description']
+# this function concatenates each metric.
 
 filledna['soup'] = filledna.apply(create_soup, axis=1)
 
@@ -431,9 +426,11 @@ def get_recommendation_new(title, cosine_sim=cosine_sim):
     # return the top 10 similar movies
     return netflix_df['title'].iloc[movie_indices]
 
+print(get_recommendation_new('savages', cosine_sim2))
+# no capital first letter required for this improved model.
+
+
 print(get_recommendation_new('narcos', cosine_sim2))
-
-
-print(get_recommendation_new('shooter', cosine_sim2))
+# no capital first letter required for this improved model.
 
 
