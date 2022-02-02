@@ -3,7 +3,7 @@
 # For example, here's several helpful packages to load
 
 import pandas as pd # read CSV file, data processing
-import numpy as np # recommender system
+import numpy as np # recommendation system
 import matplotlib.pyplot as plt # data visualisation
 import seaborn as sns # data visualisation
 
@@ -20,7 +20,7 @@ print(df.info())
 # 8807 total entries, 12 columns
 # data type for 'release_year' is an integer.
 # data type for 'date_added' is an object, change to DateTime
-# can already see 'director', 'cast', 'country' coloumns have substantial missing values.
+# can already see 'director', 'cast', 'country' columns have substantial missing values.
 
 print(df.shape)
 # There are 8807 entries and 12 columns
@@ -30,13 +30,10 @@ print(df.head())
 
 print(df.tail())
 # shows the last 5 rows of the dataset
-# column'type' is either a Movie or TV Show
+# column 'type' represents either a Movie or TV Show
 # column 'duration' has both minutes and seasons
 
 print(df.columns)
-# This lists the column names
-
-
 # below is a description of column names:
 
 #show_id: unique id of each show (not much of a use for us in this notebook)
@@ -73,7 +70,7 @@ print(netflix_df.duplicated().sum())
 # there are no duplicates in this dataset.
 
 print(netflix_df.isnull())
-# can see there are True values reflecting missing values.
+# can see there are true values reflecting missing values.
 
 print(netflix_df.isnull().sum())
 # too many missing values for 'director', 'cast', 'country' to drop these rows without affecting the dataset quality.
@@ -136,7 +133,6 @@ netflix_df['genre'].head()
 # 1) ANALYSIS OF MOVIES VS TV SHOWS
 
 # Does Netflix have more Movies or TV Shows?
-
 # Graph no. 1
 sns.set(style="darkgrid")
 plt.title("Movie v TV Show")
@@ -272,7 +268,7 @@ plt.xticks(release_year[-11:-1].index)
 plt.title('Number of Content Released by Year', color='blue', fontsize=14)
 plt.show()
 
-# INSECTING IMDB TITLE DATASET/MERGING WITH NETFLIX DATASET
+# INSPECTING IMDB TITLE DATASET/MERGING WITH NETFLIX DATASET
 
 #Reading and Inspecting Movie titles data for IMDb
 IMDb_user_ratings = pd.read_csv(r'/Users/david/Downloads/UCDPA Project Folder/IMDB-Ratings.csv')
