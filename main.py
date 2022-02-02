@@ -112,6 +112,7 @@ print(netflix_df.columns)
 
 print(netflix_df.info())
 # check the information in our resulting dataset.
+# we now have 8790 entries.
 
 print(netflix_df.dtypes)
 # check data type of each column.
