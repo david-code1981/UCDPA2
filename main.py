@@ -247,8 +247,8 @@ duration_by_year = duration_by_year.sort_index()
 plt.figure(figsize=(15,6))
 sns.lineplot(x=duration_by_year.index, y=duration_by_year.duration.values)
 plt.box(on=None)
-plt.ylabel('Movie duration in minutes')
-plt.xlabel('Year of release')
+plt.ylabel('Movie Duration in Minutes')
+plt.xlabel('Year of Release')
 plt.title("Movie Duration over the Years", fontsize=14, color='blue')
 plt.show()
 
@@ -264,6 +264,8 @@ plt.figure(figsize=(9,8))
 plt.plot(release_year[-11:-1])
 plt.scatter(release_year[-11:-1].index, release_year[-11:-1].values, s=0.5*release_year[-11:-1].values, c='Red')
 plt.box(on=None)
+plt.ylabel('Content count')
+plt.xlabel('Year of Release')
 plt.xticks(rotation = 60)
 plt.xticks(release_year[-11:-1].index)
 plt.title('Number of Content Released by Year', color='blue', fontsize=14)
@@ -293,6 +295,8 @@ print(netflix_IMDb_df.shape)
 #Sorting in a descending order, so as the output should reflect highest rated movies on top
 netflix_IMDb_df.sort_values(by=['averageRating'],inplace=True , ascending = False)
 print(netflix_IMDb_df.head(20))
+# A look at the top 20 list gives us title suggestions on what we can use for our recommender system.
+# I will take the movie title 'savages' as one.
 
 # NETFLIX RECOMMENDATION SYSTEM
 
@@ -327,8 +331,10 @@ from sklearn.metrics.pairwise import linear_kernel
 cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
 indices = pd.Series(netflix_df.index, index = netflix_df['title']).drop_duplicates()
+# create a pandas series that contains the dataset set on title column while dropping any duplicates.
 
 print(indices)
+# print indices to verify.
 
 
 def request_recommendation_for(title, cosine_sim=cosine_sim):
@@ -430,4 +436,5 @@ print(get_recommendation_new('savages', cosine_sim2))
 print(get_recommendation_new('narcos', cosine_sim2))
 # no capital first letter required for this improved model.
 
-
+# Okay so our new recommendation model is performing better than previous one.
+# it was definitely a good idea to add the additional metrics to our recommender system.
