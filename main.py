@@ -7,7 +7,6 @@ import numpy as np # recommendation system
 import matplotlib.pyplot as plt # data visualisation
 import seaborn as sns # data visualisation
 
-
 import warnings # to ignore warnings
 warnings.filterwarnings("ignore") # no warnings will be printed from now on.
 
@@ -64,7 +63,7 @@ print(netflix_df.info())
 # 'director', 'cast', 'country' have substantial missing values.
 
 print(netflix_df.duplicated())
-# This boolean check is not much use to use as it's only showing top and bottom 5 in this dataset.
+# This boolean check is not much use to us as it's only showing top and bottom 5 in this dataset.
 
 print(netflix_df.duplicated().sum())
 # there are no duplicates in this dataset.
@@ -80,22 +79,19 @@ print(netflix_df.isnull().sum())
 for column in netflix_df.columns:
     percentage = netflix_df[column].isnull().mean()
     print(f'{column}: {round(percentage * 100, 2)}%')
-
-# this further shows that percentages for 'dated_added', 'rating', 'duration' are so low we can
+# this further illustrates that percentages for 'dated_added', 'rating', 'duration' are so low we can
 # drop these rows without the impacting the integrity of the dataset.
 
 netflix_df['country'] = netflix_df['country'].fillna(netflix_df['country'].mode()[0])
 netflix_df['cast'].replace(np.nan,'No data',inplace=True)
 netflix_df['director'].replace(np.nan,'No data',inplace=True)
-
-# we will insert code here for 'director', 'cast', 'country' as mentioned above.
-# replace these missing values with 'no data'.
+# replace these missing values.
 
 print(netflix_df.head())
-# check to make sure missing values have been replaced with 'no data'.
+# check to make sure missing values have been replaced.
 
 print(netflix_df.tail())
-# check to make sure missing values have been replaced with 'no data'.
+# check to make sure missing values have been replaced.
 
 print(netflix_df.isnull().sum())
 # we are left with the missing values for 'dated_added', 'rating', 'duration' columns.
@@ -126,7 +122,6 @@ print(netflix_df.dtypes)
 netflix_df = netflix_df.rename(columns={"listed_in":"genre"})
 netflix_df['genre'] = netflix_df['genre'].apply(lambda x: x.split(",")[0])
 netflix_df['genre'].head()
-
 # rename the 'listed_in' column as 'genre' for easy understanding.
 
 # EXPLORATORY DATA ANALYSIS
@@ -138,7 +133,6 @@ netflix_df['genre'].head()
 sns.set(style="darkgrid")
 plt.title("Movie v TV Show")
 ax = sns.countplot(x="type", data=netflix_df, palette=('Red','Blue'))
-
 # can see Movies outnumber TV Shows by more than double the amount.
 
 # Percentage of titles that are either Movies or TV Show?
@@ -217,8 +211,7 @@ print(movie_df.head())
 # we can check the trend of movie durations over time.
 
 print(movie_df['duration'].value_counts())
-# can see there are some outliers in Movie duration.
-# there is also the string 'min' included in the durations.
+# there is a the string 'min' included in the durations.
 
 movie_df['duration']=movie_df['duration'].str.replace(' min','')
 movie_df['duration']=movie_df['duration'].astype(str).astype(int)
@@ -232,10 +225,8 @@ sns.set(style="darkgrid")
 sns.kdeplot(data=movie_df['duration'], shade=True)
 plt.title('Distribution of Movie Durations')
 plt.show()
-
 # now we can create a KDE graph to illustrate the distribution of Movie durations.
 # a KDE graph is useful here as we have a large number of data points.
-
 # a large amount of movies are between 75-120 mins. This makes sense as a lot of people find a
 # 3 hour movie too long to sit through in one go.
 
@@ -251,7 +242,6 @@ plt.ylabel('Movie Duration in Minutes')
 plt.xlabel('Year of Release')
 plt.title("Movie Duration over the Years", fontsize=14, color='blue')
 plt.show()
-
 # can see the change in Movie duration over time.
 # 1960 - 1970 has the highest duration in minutes before it levels out in the later part of the century.
 
@@ -277,18 +267,18 @@ plt.show()
 IMDb_user_ratings = pd.read_csv(r'/Users/david/Downloads/UCDPA Project Folder/IMDB-Ratings.csv')
 print(IMDb_user_ratings.head())
 
-# there was a sharp increase in content released from 2014 tp 2018.
-# the number of content released by year peaked in 2017 & 2018.
-
 print(IMDb_user_ratings.info())
 # as there is only 5 columns and we will be margin this to the netflix dataset we will not drop any columns.
 
 print(IMDb_user_ratings.isnull().sum())
+# check and count of missing values returns zero.
 
 netflix_IMDb_df = pd.merge(netflix_df,IMDb_user_ratings, how='inner', on ='title')
 print(netflix_IMDb_df.head())
+# using pandas to merge both datasets on titles that appear in both.
 
 print(netflix_IMDb_df.isnull().sum())
+# check and count of missing values returns zero.
 
 print(netflix_IMDb_df.shape)
 
