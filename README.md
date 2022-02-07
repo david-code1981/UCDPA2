@@ -1,6 +1,8 @@
 # UCDPA2_David_Fitzgerald
 Project Name: Netflix Recommendation System
+
 Abstract:
+
 More than 80% of the TV shows people watch on Netflix are discovered through the platforms own recommendation system. This means the majority of what people 
 decide to watch on Netflix is the result of the platforms machine learning recommender system. Netflix uses machine learning to help break viewers preconceived 
 notions and finds content they might not else have chosen.
